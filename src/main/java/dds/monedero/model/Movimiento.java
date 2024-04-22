@@ -44,17 +44,10 @@ public class Movimiento {
     return !esDeposito;
   }
 
-  public void agregateA(Cuenta cuenta) {
-    cuenta.setSaldo(calcularValor(cuenta));
-    // Estamos llamando un metodo que crea otro movimiento con los mismos datos que este, no tiene sentido.
-    cuenta.agregarMovimiento(this);
-  }
-
-  public double calcularValor(Cuenta cuenta) {
+  public double calcularValor() {
     if (esDeposito) {
-      return cuenta.getSaldo() + getMonto();
-    } else {
-      return cuenta.getSaldo() - getMonto();
+      return getMonto();
     }
+    return -getMonto();
   }
 }

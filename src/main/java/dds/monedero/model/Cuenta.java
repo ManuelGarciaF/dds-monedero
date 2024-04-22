@@ -11,16 +11,14 @@ import java.util.List;
 
 public class Cuenta {
 
-  // Temporary Field, saldo se puede obtener de los movimientos
-  private double saldo = 0;
   private List<Movimiento> movimientos = new ArrayList<>();
 
   public Cuenta() {
-    saldo = 0;
   }
 
   public Cuenta(double montoInicial) {
-    saldo = montoInicial;
+    Movimiento depositoInicial = new Movimiento(LocalDate.now(), montoInicial, true);
+    movimientos.add(depositoInicial);
   }
 
   public void setMovimientos(List<Movimiento> movimientos) {
@@ -36,7 +34,9 @@ public class Cuenta {
       throw new MaximaCantidadDepositosException("Ya excedio los " + 3 + " depositos diarios");
     }
 
-    new Movimiento(LocalDate.now(), cuanto, true).agregateA(this);
+    agregarMovimiento(
+        new Movimiento(LocalDate.now(), cuanto, true)
+    );
   }
 
   public void sacar(double cuanto) {
@@ -52,7 +52,10 @@ public class Cuenta {
       throw new MaximoExtraccionDiarioException("No puede extraer mas de $ " + 1000
           + " diarios, límite: " + limite);
     }
-    new Movimiento(LocalDate.now(), cuanto, false).agregateA(this);
+
+    agregarMovimiento(
+        new Movimiento(LocalDate.now(), cuanto, false)
+    );
   }
 
   public void agregarMovimiento(Movimiento movimiento) {
@@ -71,11 +74,10 @@ public class Cuenta {
   }
 
   public double getSaldo() {
-    return saldo;
-  }
-
-  public void setSaldo(double saldo) {
-    this.saldo = saldo;
+    // Calcular el saldo directamente con la lista de movimientos
+    return getMovimientos().stream()
+        .mapToDouble(Movimiento::calcularValor)
+        .sum();
   }
 
 }

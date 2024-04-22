@@ -51,16 +51,16 @@ public class MonederoTest {
 
   @Test
   void ExtraerMasQueElSaldo() {
+    cuenta.poner(90);
     assertThrows(SaldoMenorException.class, () -> {
-      cuenta.setSaldo(90);
       cuenta.sacar(91);
     });
   }
 
   @Test
   public void ExtraerMasDe1000() {
+    cuenta.poner(5000);
     assertThrows(MaximoExtraccionDiarioException.class, () -> {
-      cuenta.setSaldo(5000);
       cuenta.sacar(1001);
     });
   }
