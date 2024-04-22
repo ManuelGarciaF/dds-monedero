@@ -46,6 +46,7 @@ public class Movimiento {
 
   public void agregateA(Cuenta cuenta) {
     cuenta.setSaldo(calcularValor(cuenta));
+    // Estamos llamando un metodo que crea otro movimiento con los mismos datos que este, no tiene sentido.
     cuenta.agregarMovimiento(fecha, monto, esDeposito);
   }
 

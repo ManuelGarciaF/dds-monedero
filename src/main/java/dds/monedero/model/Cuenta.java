@@ -11,6 +11,7 @@ import java.util.List;
 
 public class Cuenta {
 
+  // Temporary Field, saldo se puede obtener de los movimientos
   private double saldo = 0;
   private List<Movimiento> movimientos = new ArrayList<>();
 
@@ -31,6 +32,7 @@ public class Cuenta {
       throw new MontoNegativoException(cuanto + ": el monto a ingresar debe ser un valor positivo");
     }
 
+    // No se si es un code smell, pero deberiamos usar movimiento.fueDepositado(hoy) para checkear solo hoy
     if (getMovimientos().stream().filter(movimiento -> movimiento.isDeposito()).count() >= 3) {
       throw new MaximaCantidadDepositosException("Ya excedio los " + 3 + " depositos diarios");
     }
@@ -40,6 +42,7 @@ public class Cuenta {
 
   public void sacar(double cuanto) {
     if (cuanto <= 0) {
+      // El mensaje de error esta mal, estamos sacando no ingresando
       throw new MontoNegativoException(cuanto + ": el monto a ingresar debe ser un valor positivo");
     }
     if (getSaldo() - cuanto < 0) {
@@ -54,6 +57,7 @@ public class Cuenta {
     new Movimiento(LocalDate.now(), cuanto, false).agregateA(this);
   }
 
+  // Long parameter list, ya existe la abstraccion de Movimiento que podemos aceptar como parametro
   public void agregarMovimiento(LocalDate fecha, double cuanto, boolean esDeposito) {
     Movimiento movimiento = new Movimiento(fecha, cuanto, esDeposito);
     movimientos.add(movimiento);
@@ -61,6 +65,7 @@ public class Cuenta {
 
   public double getMontoExtraidoA(LocalDate fecha) {
     return getMovimientos().stream()
+        // Feature Envy, deberiamos usar el metodo fueExtraido que ya existe para filtrar la lista
         .filter(movimiento -> !movimiento.isDeposito() && movimiento.getFecha().equals(fecha))
         .mapToDouble(Movimiento::getMonto)
         .sum();
